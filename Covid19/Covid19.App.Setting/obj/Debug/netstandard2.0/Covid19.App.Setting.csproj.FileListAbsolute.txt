@@ -1,0 +1,11 @@
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\bin\Debug\netstandard2.0\Covid19.App.Setting.deps.json
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\bin\Debug\netstandard2.0\Covid19.App.Setting.dll
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\bin\Debug\netstandard2.0\Covid19.App.Setting.pdb
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\obj\Debug\netstandard2.0\Covid19.App.Setting.csprojAssemblyReference.cache
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\obj\Debug\netstandard2.0\Covid19.App.Setting.ApiResource.resources
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\obj\Debug\netstandard2.0\Covid19.App.Setting.csproj.GenerateResource.cache
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\obj\Debug\netstandard2.0\Covid19.App.Setting.csproj.CoreCompileInputs.cache
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\obj\Debug\netstandard2.0\Covid19.App.Setting.AssemblyInfoInputs.cache
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\obj\Debug\netstandard2.0\Covid19.App.Setting.AssemblyInfo.cs
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\obj\Debug\netstandard2.0\Covid19.App.Setting.dll
+D:\Project\Ideators\Covid19\Covid19\Covid19.App.Setting\obj\Debug\netstandard2.0\Covid19.App.Setting.pdb

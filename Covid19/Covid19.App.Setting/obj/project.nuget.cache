@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "xrVMEsx8bjfb4BKfAaAEekYkXHR1IoLCbEh44DAcqjPggG9erExYaS5flhvI5UyFeuP2pKhURXArsl6XkOO2Gw==",
+  "success": true,
+  "projectFilePath": "D:\\Project\\Ideators\\Covid19\\Covid19\\Covid19.App.Setting\\Covid19.App.Setting.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\KISHOR\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\KISHOR\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Counter.razor" />
+    <Content Remove="Pages\Error.razor" />
+    <Content Remove="Pages\FetchData.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazorise" Version="0.9.0" />
+    <PackageReference Include="Blazorise.Bootstrap" Version="0.9.0" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.0" />
+    <PackageReference Include="Radzen.Blazor" Version="2.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Covid19.App.Setting\Covid19.App.Setting.csproj" />
+    <ProjectReference Include="..\Covid19.DistrictWise.Service\Covid19.DistrictWise.Service.csproj" />
+    <ProjectReference Include="..\Covid19.Models\Covid19.Models.csproj" />
+    <ProjectReference Include="..\Covid19.SampleTest.Service\Covid19.SampleTest.Service.csproj" />
+    <ProjectReference Include="..\Covid19.SpreadTrends.Service\Covid19.SpreadTrends.Service.csproj" />
+    <ProjectReference Include="..\Covid19.StatsStateWise.Service\Covid19.StatsStateWise.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\skeleton\" />
+  </ItemGroup>
+
+</Project>
