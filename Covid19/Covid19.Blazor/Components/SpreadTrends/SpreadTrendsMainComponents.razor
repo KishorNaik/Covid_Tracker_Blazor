@@ -1,0 +1,214 @@
+﻿@page "/spreadtrends"
+@inject IStateWiseService stateWiseService
+@inject ISpreadTrendsService spreadTrendService
+
+@if (StateRoot == null)
+{
+    <Alert Color="Color.Success" Visible="true">
+        <AlertMessage>Loading...</AlertMessage>
+    </Alert>
+}
+else
+{
+<div class="container-fluid">
+    <div class="row">
+        <div class="two columns">
+
+            <label>Select State:</label>
+
+        </div>
+        <div class="ten columns">
+            <Radzen.Blazor.RadzenDropDown TValue="String"
+                                          Data="State"
+                                          TextProperty="StateName"
+                                          ValueProperty="StateName"
+                                          AllowFiltering="true"
+                                          FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                          Visible="true"
+                                          Change="OnDropDownChangedEvent">
+
+            </Radzen.Blazor.RadzenDropDown>
+        </div>
+    </div>
+    <div class="row">
+        <div class="twelve columns">
+            @if (ListRegionalLineChart != null)
+            {
+                <ConfirmIndianCaseLineChartComponent ItemSource="ListRegionalLineChart">
+
+                </ConfirmIndianCaseLineChartComponent>
+
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="twelve columns">
+            @if (ListRegionalLineChart != null)
+            {
+                <ConfirmForeignCaseLineChartComponent ItemSource="ListRegionalLineChart">
+
+                </ConfirmForeignCaseLineChartComponent>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="twelve columns">
+            @if (ListRegionalLineChart != null)
+            {
+                <DischargedLineChartComponent ItemSource="ListRegionalLineChart"></DischargedLineChartComponent>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="twelve columns">
+            @if (ListRegionalLineChart != null)
+            {
+                <DeathLineChartComponent ItemSource="ListRegionalLineChart"></DeathLineChartComponent>
+            }
+        </div>
+    </div>
+</div>
+}
+
+
+@code {
+
+    #region Private property
+    private StateRootModel StateRoot { get; set; }
+
+    private SpreadTrendRootSTModel SpreadTrendModel { get; set; }
+
+    private List<StateModel> State { get; set; }
+
+    private Object SelectedDropDownValue { get; set; }
+
+    private List<RegionalSTModel> ListRegionalLineChart { get; set; }
+    #endregion
+
+    #region Private Method
+    private Task BindStateDataAsync()
+    {
+        var data =
+               StateRoot
+               ?.data
+               ?.regional
+               ?.AsEnumerable()
+               ?.Select((leRegionalModelObj) => new StateModel()
+               {
+                   StateName=leRegionalModelObj?.loc
+               })
+               ?.ToList();
+
+        State = data;
+        return Task.CompletedTask;
+    }
+
+    //private Task<dynamic> GetDateAsync()
+    //{
+    //    var data=
+    //         SpreadTrendModel
+    //         ?.data
+    //         ?.AsEnumerable()
+    //         ?.Select((leDateSTModelObj) => leDateSTModelObj?.day)
+    //         ?.ToList();
+
+    //    return Task.FromResult<dynamic>(data);
+    //}
+
+    private Task<List<RegionalSTModel>> GetStateWiseWithDateDataFilterAsync(string countryName)
+    {
+        List<RegionalSTModel> list = new List<RegionalSTModel>();
+
+        SpreadTrendModel
+        ?.data
+        ?.AsEnumerable()
+        ?.ToList()
+        ?.ForEach((leDataStModel) =>
+        {
+            var relegionData =
+                    leDataStModel
+                    ?.regional
+                    ?.Where((leRegionalSTModel) => leRegionalSTModel.loc == countryName)
+                    ?.Select((leRegionalSTModel) => new RegionalSTModel()
+                    {
+                        confirmedCasesForeign = (leRegionalSTModel.confirmedCasesForeign==0 || leRegionalSTModel.confirmedCasesForeign==null) ? 1 : leRegionalSTModel.confirmedCasesForeign,
+                        confirmedCasesIndian = (leRegionalSTModel.confirmedCasesIndian==0 || leRegionalSTModel.confirmedCasesIndian==null) ? 1 : leRegionalSTModel.confirmedCasesIndian,
+                        discharged =(leRegionalSTModel.discharged==0 || leRegionalSTModel.discharged==null) ? 1 : leRegionalSTModel.discharged,
+                        deaths = (leRegionalSTModel.deaths==0 || leRegionalSTModel.deaths==null) ? 1 : leRegionalSTModel.deaths,
+                        totalConfirmed = (leRegionalSTModel.totalConfirmed==0 || leRegionalSTModel.totalConfirmed==null)? 1 : leRegionalSTModel.totalConfirmed,
+                        day=leDataStModel?.day
+                    })
+                    ?.FirstOrDefault();
+
+            if(relegionData!=null)
+            {
+                list.Add(relegionData);
+            }
+            else
+            {
+                var regData = new RegionalSTModel()
+                {
+                    day = leDataStModel?.day,
+                    confirmedCasesForeign = 1,
+                    confirmedCasesIndian = 1,
+                    discharged = 1,
+                    deaths = 1,
+                    totalConfirmed = 1
+                };
+                list.Add(regData);
+
+            }
+
+        });
+
+        return Task.FromResult<List<RegionalSTModel>> (list);
+    }
+
+
+    #endregion
+
+    #region Event
+    private  Task OnDropDownChangedEvent(Object args)
+    {
+        InvokeAsync(async() => {
+
+            SelectedDropDownValue = args;
+
+            //var getDate = await this.GetDateAsync();
+
+            ListRegionalLineChart =
+                ((await this.GetStateWiseWithDateDataFilterAsync(SelectedDropDownValue.ToString()))
+                ?.OrderByDescending((leRegModel)=>leRegModel.day)
+                ?.Take(5)
+                )
+                ?.OrderBy((leRegModel)=>leRegModel.day)
+                ?.ToList();
+
+        });
+
+        return Task.CompletedTask;
+
+
+    }
+    #endregion 
+
+
+    #region Protected Method
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StateRoot = await stateWiseService?.ConsumeStateWiseLatestSummaryDataAsync();
+
+            SpreadTrendModel = await spreadTrendService?.ConsumeSpreadTrendsApiAsync();
+
+            await BindStateDataAsync();
+
+            StateHasChanged();
+        }
+
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+    #endregion
+
+}

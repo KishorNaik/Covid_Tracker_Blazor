@@ -1,0 +1,45 @@
+﻿    <div class="container">
+        <div class="rounded">
+
+            <div class="row">
+                <div class="six columns">
+                    <div class="shadow bg-dark rounded p-4 m-1">
+                        <div class="row">
+                            <span class="twelve columns" style="color:darkgray">
+                                Last Refresh Date
+                            </span>
+                        </div>
+                        <div class="row">
+                            <span class="twelve columns" style="color:red">
+                                @StateRootApiRefreshDate.lastRefreshed
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="six columns">
+                    <div class="shadow bg-dark rounded p-4 m-1">
+                        <div class="row">
+                            <span class="twelve columns" style="color:darkgrey">
+                                Last Origin Update
+                            </span>
+                        </div>
+                        <div class="row">
+                            <span class="twelve columns" style="color:red">
+                                @StateRootApiRefreshDate.lastOriginUpdate
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+@code {
+
+    [Parameter]
+    public StateRootModel StateRootApiRefreshDate { get; set; }
+
+}

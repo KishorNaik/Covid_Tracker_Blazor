@@ -1,0 +1,175 @@
+﻿@page "/district"
+@page "/district/{statename}"
+
+@inject IStateWiseService stateWiseService
+@inject IDistrictWiseService districtWiseService
+
+@if (StateRoot == null)
+{
+    <Alert Color="Color.Success" Visible="true">
+        <AlertMessage>Loading...</AlertMessage>
+    </Alert>
+}
+else
+{
+<div class="container-fluid">
+    <div class="row">
+        <div class="two columns">
+
+            <label>Select State:</label>
+
+        </div>
+        <div class="ten columns">
+            <Radzen.Blazor.RadzenDropDown TValue="String"
+                                          Data="State"
+                                          TextProperty="StateName"
+                                          ValueProperty="StateName"
+                                          AllowFiltering="true"
+                                          FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                          SelectedItem="statename"
+                                          Visible="true"
+                                          Change="OnDropDownChangedEvent"
+                                          >
+
+            </Radzen.Blazor.RadzenDropDown>
+        </div>
+    </div>
+    <div class="row">
+        <div class="twelve columns mt-2">
+            @if (ListFilterDistrict != null)
+            {
+                <RadzenGrid AllowFiltering="true"
+                            AllowSorting="true"
+                            TItem="DistrictDataModel"
+                            Data="ListFilterDistrict"
+                            Responsive="true">
+                    <Columns>
+                        <RadzenGridColumn TItem="DistrictDataModel" Property="district" Title="District">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="DistrictDataModel" Property="active" Title="Active">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="DistrictDataModel" Property="confirmed" Title="Confirmed">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="DistrictDataModel" Property="deceased" Title="Deceased">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="DistrictDataModel" Property="recovered" Title="Recovered">
+                        </RadzenGridColumn>
+                  
+                    </Columns>
+
+                </RadzenGrid>
+            }
+        </div>
+    </div>
+</div>
+}
+
+@code {
+
+    #region Public Property
+    [Parameter]
+    public String statename { get; set; }
+    #endregion
+
+    #region Private Property
+    private StateRootModel StateRoot { get; set; }
+
+    private List<StateModel> State { get; set; }
+
+    private List<DistrictRootObjectModel> ListDistrict { get; set; }
+
+    private List<DistrictDataModel> ListFilterDistrict { get; set; }
+    #endregion
+
+    #region Private Method
+    private Task BindStateDataAsync()
+    {
+        var data =
+               StateRoot
+               ?.data
+               ?.regional
+               ?.AsEnumerable()
+               ?.Select((leRegionalModelObj) => new StateModel()
+               {
+                   StateName = leRegionalModelObj?.loc
+               })
+               ?.ToList();
+
+        State = data;
+        return Task.CompletedTask;
+    }
+
+    private Task GetDistrictListStateWiseAndBindDataGridAsync()
+    {
+        List<DistrictDataModel> listFilterDistrictModel = null;
+        var tempStateName = (statename?.Contains("#")==true) ? statename?.Remove(Convert.ToInt32(statename?.IndexOf("#"))): statename;
+
+        if (tempStateName!=null)
+        {
+            listFilterDistrictModel =
+                ListDistrict
+                ?.AsEnumerable()
+                ?.Where((leDistrictRootObject) => leDistrictRootObject.state == tempStateName)
+                ?.ToList()
+                ?.FirstOrDefault()
+                ?.districtData
+                ?.OrderByDescending((leDistrictDataModel) => leDistrictDataModel.confirmed)
+                ?.ToList();
+        }
+
+        ListFilterDistrict = listFilterDistrictModel;
+
+        return Task.CompletedTask;
+    }
+    #endregion
+
+    #region Event
+    private Task OnDropDownChangedEvent(Object args)
+    {
+        InvokeAsync(async () =>
+        {
+
+            statename =Convert.ToString( args);
+
+            await this.GetDistrictListStateWiseAndBindDataGridAsync();
+
+        });
+
+        return Task.CompletedTask;
+
+
+    }
+    #endregion
+
+    #region Protected Method
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StateRoot = null;
+            ListDistrict = null;
+
+            StateRoot = await stateWiseService?.ConsumeStateWiseLatestSummaryDataAsync();
+
+            await BindStateDataAsync();
+
+            ListDistrict = await districtWiseService?.ConsumeDistrictWiseApiAsync();
+
+            await GetDistrictListStateWiseAndBindDataGridAsync();
+
+            StateHasChanged();
+        }
+        else
+        {
+            if (statename == null)
+            {
+                ListFilterDistrict = null;
+                StateHasChanged();
+            }
+        }
+
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+    #endregion
+
+}

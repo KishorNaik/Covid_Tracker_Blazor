@@ -1,0 +1,24 @@
+﻿
+
+    <div class="shadow-lg bg-success rounded p-4 mt-2">
+        <div class="row">
+            <span class="twelve columns" style="color:antiquewhite">
+                Total
+            </span>
+        </div>
+        <div class="row">
+            <span class="twelve columns" style="color:white">
+                @Summary?.total
+            </span>
+        </div>
+    </div>
+
+
+
+
+    @code {
+
+        [Parameter]
+        public SummaryModel Summary { get; set; }
+
+    }

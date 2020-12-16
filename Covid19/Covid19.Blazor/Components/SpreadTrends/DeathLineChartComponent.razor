@@ -1,0 +1,49 @@
+﻿
+<div class="container">
+    <div class="row">
+        <div class="twelve columns">
+            @if (ItemSource != null)
+            {
+                <div class="rounded shadow mt-2">
+                    <h4>Death</h4>
+                    <RadzenChart ColorScheme="ColorScheme.Pastel">
+                        <RadzenLineSeries Smooth="false"
+                                          Data="@ItemSource"
+                                          CategoryProperty="day"
+                                          Title="Death"
+                                          LineType="LineType.Solid"
+                                          ValueProperty="deaths"
+                                          TItem="RegionalSTModel">
+                            <RadzenMarkers MarkerType="MarkerType.Square" />
+                        </RadzenLineSeries>
+                        <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}">
+                            <RadzenTicks Stroke="green" StrokeWidth="2" />
+                        </RadzenCategoryAxis>
+                        <RadzenValueAxis Formatter="@FormatAsDeathCase">
+                            <RadzenGridLines Visible="true" />
+                            <RadzenAxisTitle Text="Death" />
+                        </RadzenValueAxis>
+
+                    </RadzenChart>
+                </div>
+
+            }
+            else
+            {
+                <Alert Color="Color.Warning" Visible="true">
+                    <AlertMessage>No Record Found</AlertMessage>
+                </Alert>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<RegionalSTModel> ItemSource { get; set; }
+
+    string FormatAsDeathCase(object value)
+    {
+        return Convert.ToString(value);
+    }
+}

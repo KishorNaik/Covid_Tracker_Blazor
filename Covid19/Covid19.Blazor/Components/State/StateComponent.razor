@@ -1,0 +1,97 @@
+﻿@page "/state"
+@inject IStateWiseService stateWiseService
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="twelve columns">
+                <div class="float-right">
+                    <button class="btn btn-light" @onclick="OnClickRefresh">Refresh</button>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="twelve columns mt-2">
+                <RadzenGrid
+                                          AllowFiltering="true"
+                                          AllowSorting="true"
+                                          TItem="RegionalModel"
+                                          Data="ListState"
+                                          Responsive="true"
+                                          >
+                    <Columns>
+                        <RadzenGridColumn TItem="RegionalModel" Property="loc" Title="State">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="RegionalModel" Property="confirmedCasesIndian" Title="Confirmed Indian">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="RegionalModel" Property="confirmedCasesForeign" Title="Confirmed Foreign">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="RegionalModel" Property="totalConfirmed" Title="Total Confirm">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="RegionalModel" Property="discharged" Title="Discharged">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="RegionalModel" Property="deaths" Title="Deaths">
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="RegionalModel" Property="loc" Title="District" Filterable="false" Sortable="false">
+                            <Template Context="data">
+                                @{ 
+                                    var url = $"/district/{data.loc}";
+                                }
+                                <a class="btn btn-secondary" href="@url">View</a>
+                            </Template>
+                        </RadzenGridColumn>
+
+
+                    </Columns>
+
+                </RadzenGrid>
+            </div>
+        </div>
+    </div>
+
+@code {
+
+    #region Private Property
+
+    private List<RegionalModel> ListState { get; set; }
+
+    #endregion
+
+    #region Private Method
+    public async Task ConsumeStateWiseLatestSummaryApi()
+    {
+        var responseData = await stateWiseService?.ConsumeStateWiseLatestSummaryDataAsync();
+
+        ListState =
+            responseData
+            ?.data
+            ?.regional
+            ?.AsEnumerable()
+            ?.OrderByDescending((leRegionalModel) => leRegionalModel.confirmedCasesIndian)
+            ?.ThenByDescending((leRegionalModel) => leRegionalModel.deaths)
+            ?.ToList();
+    }
+    #endregion
+
+    #region Event
+    private async Task OnClickRefresh()
+    {
+        await this.ConsumeStateWiseLatestSummaryApi();
+    }
+    #endregion 
+
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await this.ConsumeStateWiseLatestSummaryApi();
+
+            StateHasChanged();
+        }
+    }
+
+
+
+}

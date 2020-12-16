@@ -1,0 +1,103 @@
+﻿@page "/dashboard"
+@inject IStateWiseService stateWiseService
+@inject ISampleTestService sampleTestService
+
+@if (StateRoot == null)
+{
+    <Alert Color="Color.Success" Visible="true">
+        <AlertMessage>Loading...</AlertMessage>
+    </Alert>
+}
+else
+{
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="twelve columns">
+                <div class="float-right">
+                    <button class="btn btn-light" @onclick="OnClickRefresh">Refresh</button>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="twelve columns">
+                <div>
+                    <h2 style="color:red">@Title</h2>
+                </div>
+            </div>
+            <div class="twelve columns">
+
+                <ApiRefreshDateComponent StateRootApiRefreshDate="@StateRoot"></ApiRefreshDateComponent>
+
+            </div>
+
+            <div class="twelve columns">
+
+                <SummaryTotalComponent Summary="@StateRoot?.data?.summary"></SummaryTotalComponent>
+
+            </div>
+            <div class="twelve columns">
+                <SummaryAllComponent Summary="@StateRoot?.data?.summary"></SummaryAllComponent>
+            </div>
+            <div class="twelve columns">
+                <SampleTestingComponent Data="@SampleTestRoot?.data"></SampleTestingComponent>
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+
+    #region Private Property
+    private StateRootModel StateRoot { get; set; }
+    private String Title { get; set; }
+
+    private SampleTestRootModel SampleTestRoot { get; set; }
+    #endregion
+
+    #region Private Method
+    private async Task ConsumeStateWiseLatesSummaryApi()
+    {
+        StateRoot = await stateWiseService?.ConsumeStateWiseLatestSummaryDataAsync();
+
+        Title = "Covid-19 India Stats";
+
+    }
+    private async Task ConsumeSampleTestApi()
+    {
+        try
+        {
+            SampleTestRoot = await sampleTestService?.ConsumeSampleTestApiAsync();
+        }
+        catch(Exception ex)
+        {
+
+        }
+    }
+    #endregion
+
+    #region Event
+    private async Task OnClickRefresh()
+    {
+        await ConsumeStateWiseLatesSummaryApi();
+        await ConsumeSampleTestApi();
+
+    }
+    #endregion 
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ConsumeStateWiseLatesSummaryApi();
+
+            await ConsumeSampleTestApi();
+
+            StateHasChanged();
+        }
+
+    }
+
+
+}

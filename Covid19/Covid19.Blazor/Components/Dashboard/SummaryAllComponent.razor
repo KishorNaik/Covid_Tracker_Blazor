@@ -1,0 +1,73 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="three columns">
+            <div class="shadow rounded p-4 mt-3 h-100" style="background-color:#FFA07A">
+                <div class="row">
+                    <span class="twelve columns" style="color: #8B0000">
+                        Confirmed Indian
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="twelve columns" style="color:#B22222">
+                        @Summary?.confirmedCasesIndian
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="three columns">
+            <div class="shadow rounded p-4 mt-3 h-100" style="background-color:#F0F8FF">
+                <div class="row">
+                    <span class="twelve columns" style="color: #00BFFF">
+                        Confirmed Foreign
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="twelve columns" style="color:#1E90FF">
+                        @Summary?.confirmedCasesForeign
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="three columns">
+            <div class="shadow rounded p-4 mt-3 h-100" style="background-color:#FFFACD">
+                <div class="row">
+                    <span class="twelve columns" style="color:#DEB887">
+                        Discharged
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="twelve columns" style="color:#D2B48C">
+                        @Summary?.discharged
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="three columns">
+            <div class="shadow rounded p-4 mt-3 h-100" style="background-color:#DCDCDC">
+                <div class="row">
+                    <span class="twelve columns" style="color: #A9A9A9">
+                        Death
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="twelve columns" style="color:#696969">
+                        @Summary?.deaths
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+        @code {
+
+            [Parameter]
+            public SummaryModel Summary { get; set; }
+
+        }

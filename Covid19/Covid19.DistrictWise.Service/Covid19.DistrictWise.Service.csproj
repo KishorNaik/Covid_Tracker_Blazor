@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pathoschild.Http.FluentClient" Version="3.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Covid19.App.Setting\Covid19.App.Setting.csproj" />
+    <ProjectReference Include="..\Covid19.Models\Covid19.Models.csproj" />
+  </ItemGroup>
+
+</Project>
